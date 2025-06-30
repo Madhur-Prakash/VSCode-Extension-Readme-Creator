@@ -635,7 +635,7 @@ class ReadmeGeneratorExtension {
         details += `• Auto Open: ${config.autoOpen}\n`;
 
         const panel = vscode.window.createWebviewPanel(
-            'readmeConfig',
+            'readmeConfig', 
             'README Generator Configuration',
             vscode.ViewColumn.One,
             {}
