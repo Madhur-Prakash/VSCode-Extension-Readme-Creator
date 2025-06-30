@@ -15,3 +15,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Removed `readmeGenerator.maxDepth` from settings as it was unused.
 - Minor internal refactoring and cleanup.
+
+## [1.0.2] - 2025-06-30
+
+- Updated Extension's Readme for clear instructions  

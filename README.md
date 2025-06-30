@@ -23,4 +23,3 @@ AI-powered Readme creator that creates professional documentation for your proje
 ## Configuration
 - Set your Groq API key in settings
 - Choose your preferred AI model
-- Customize folder scanning depth
