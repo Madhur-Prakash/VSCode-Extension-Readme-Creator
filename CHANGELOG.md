@@ -1,9 +1,12 @@
 # Change Log
 
-All notable changes to the "readme-generator" extension will be documented in this file.
+All notable changes to the "readme-creator" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## [1.0.0] - 2025-06-30
 
-- Initial release
+- Initial release of the Readme Creator extension.
+- Added AI-powered README generation using Groq API.
+- Supports customizable prompts and folder structure inclusion.
+- Provides commands for generating, previewing, and configuring README files.
