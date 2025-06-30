@@ -247,38 +247,46 @@ class FolderStructureGenerator {
 class ReadmeGeneratorService {
     constructor(logger) {
         this.logger = logger;
-        this.samplePrompt = this.getSamplePrompt();
 		this.sampleReadme = fs.readFileSync(path.join(__dirname, 'templates', 'prompt.md'), 'utf8');
+        this.samplePrompt = this.getSamplePrompt();
     }
 
     getSamplePrompt() {
 		// const sampleReadme = fs.readFileSync(path.join(__dirname, 'templates', 'prompt.md'), 'utf8');
 		// this.logger.info('Sample README prompt loaded successfully');
 		// this.logger.info(sampleReadme.slice(0, 100));  // Show first 100 characters
-        return `You are a GitHub README generator that creates clear, professional, and visually engaging README files using markdown formatting.
-Your README should follow best practices in terms of structure, content, and presentation. You will be provided with project details,
-including title, description, features, usage instructions, technologies used, folder structure, GitHub repository link, and other relevant information.Beware weather the user gave u a uppercase or lowercase word for folder structure, if the word user game dosen't exist in the folder structure, just ignore it.
+        return  `You are a GitHub README generator that creates clear, professional, and visually engaging README files using markdown formatting. 
+		Your README should follow best practices in terms of structure, content, and presentation. You will be provided with project details, 
+		including title, description, features, usage instructions, technologies used, folder structure, GitHub repository link, and other relevant information.
 
-Here is your task:
-- Generate a complete README using markdown.
-- Use sections in the following order: Title, Overview, Features, Technology Stack, Installation, Usage, API Endpoints (if applicable),
-Project Structure (include this section *only* if the folder structure is provided), Future Enhancements, Contribution Guidelines, License, Author.
-- Make sure section headers are formatted using markdown syntax (e.g., \`##\`, \`###\`).
-- Use bullet points, code blocks, and section dividers (\`---\`) where appropriate for clarity and aesthetics.
-- Avoid any commentary, explanation, or meta-text — return *only* the final README content in markdown.
+		Here is your task:
+		- Generate a complete README using markdown.
+		- Use sections in the following order: Title, Overview, Features, Technology Stack, Installation, Usage, API Endpoints (if applicable), Project Structure (include this section *only* if the folder structure is provided), Future Enhancements, Contribution Guidelines, License, Author.
+		- Make sure section headers are formatted using markdown syntax (e.g., \`##\`, \`###\`).
+		- Use bullet points, code blocks, and section dividers (\`---\`) where appropriate for clarity and aesthetics.
+		- Avoid any commentary, explanation, or meta-text — return *only* the final README content in markdown.
 
-Give only markdown output, do not include any other text or explanation.
+		Give only markdown output, do not include any other text or explanation.
 
-Use the following guidelines:
-- As for author use username from the repo link, if not available use "Your Name".
-- As for license use MIT License.
-- Give the folder structure in the Project Structure section only if it is provided, otherwise skip this section.
-- Don't give lines like (\`here's the output:\`) or "Here's the generated README:" or "Here is the README:"
-- Just give the output in markdown, no other text.
+		As for author use username from the repo link, if not available use "Your Name".
 
-Ensure the output is professional, well-formatted, and complete.
-"Here is a sample README structure to use as reference: ${this.sampleReadme}"`;
+		And as for license use MIT License.
 
+		Give the folder structure in the Project Structure section only if it is provided, otherwise skip this section.
+
+		Follow these rules strictly:
+		Give the installation steps exaxtly as provided in the ${this.sampleReadme} file. Do not modify the installation steps.
+		Give the usage instructions exactly as provided in the ${this.sampleReadme} file. Do not modify the usage instructions.
+		
+		Don't give lines like (\`here's the output:\`) or "Here's the generated README:" or "Here is the README:"
+		
+		Just give the output in markdown, no other text.
+		Use the following sample README as a reference for structure and formatting:
+		
+		Here is a sample README structure to use as reference:
+		${this.sampleReadme}
+
+		Ensure the output closely follows this format. Be concise, complete, and clear.`;
     }
 
     async generateSummary(inputPrompt, repoLink, folderStructure, config) {
