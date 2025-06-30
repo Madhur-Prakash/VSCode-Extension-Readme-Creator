@@ -1,7 +1,7 @@
 {
-  "name": "readme-generator",
-  "displayName": "README Generator",
-  "description": "AI-powered README generator for your projects",
+  "name": "readme-creator",
+  "displayName": "README Creator",
+  "description": "AI-powered README creator for your projects",
   "repository": {
   "type": "git",
   "url": "https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Generator.git"
