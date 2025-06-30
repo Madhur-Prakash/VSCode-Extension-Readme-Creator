@@ -1,5 +1,5 @@
 Open Source License — Madhur Prakash
-
+ 
 Copyright (c) 2025 Madhur Prakash
 
 This project is open source and free to use, modify, and distribute under the following conditions:
