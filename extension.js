@@ -54,7 +54,6 @@ class ConfigManager {
         return {
             groqApiKey: groqApiKey.trim(),
             model: model.trim(),
-            maxDepth: config.get('maxDepth', 100),
             autoOpen: config.get('autoOpen', true)
         };
     }
@@ -153,68 +152,94 @@ DEFAULT_MODEL=llama-3.3-70b-versatile
 
 // Folder structure generator
 class FolderStructureGenerator {
-    constructor(logger, maxDepth = 1000, venvName = '') {
+    constructor(logger, customIgnores = []) {
         this.logger = logger;
-        this.maxDepth = maxDepth;
-		this.venvName = venvName;
-        this.ignorePatterns = [
-            'node_modules', '.git', '.vscode', '__pycache__', '.pytest_cache',
-            'dist', 'build', '.env', '.DS_Store', 'venv', 'env', '.next',
-            'target', 'out', '.idea', '.vs', 'bin', 'obj', 'logs',
-            '.nyc_output', 'coverage', '.cache', 'tmp', 'temp'
+        this.customIgnores = customIgnores.map(name => name.trim()).filter(Boolean);
+
+        this.fileComments = {
+            "app.py": "main FastAPI app",
+            "README.md": "Project documentation",
+            ".gitignore": "gitignore file for GitHub",
+            "__init__.py": "initializes package",
+            "log.py": "main logic",
+            "models.py": "models"
+        };
+
+        this.defaultIgnores = [
+            ".git", "__pycache__", ".DS_Store", ".vscode", "node_modules", 
+            ".pytest_cache", "logs", "venv", "env", "FOLDER_STRUCTURE.md",
+            "dist", "build", ".env", ".next", "target", "out", ".idea", 
+            ".vs", "bin", "obj", ".nyc_output", "coverage", ".cache", "tmp", "temp"
         ];
     }
 
-    async generate(rootPath, prefix = '', currentDepth = 0, isLast = true) {
-    if (currentDepth >= this.maxDepth) {
-        return '';
+    getIgnoredFiles() {
+        // Combine custom ignores with default ignores
+        const ignoredFiles = [...this.customIgnores, ...this.defaultIgnores];
+        return [...new Set(ignoredFiles)]; // Remove duplicates
     }
 
-    let structure = '';
-    try {
-        const items = await fs.readdir(rootPath, { withFileTypes: true });
-        const sortedItems = items
-            .filter(item => !this.shouldIgnore(item.name))
-            .sort((a, b) => {
-                if (a.isDirectory() && !b.isDirectory()) return -1;
-                if (!a.isDirectory() && b.isDirectory()) return 1;
-                return a.name.localeCompare(b.name);
-            });
+    async drawTreeToMd(dirPath, prefix = "", output = [], ignoredFiles = null) {
+        try {
+            const files = await fs.readdir(dirPath);
+            const sortedFiles = files.sort();
+            
+            // Use provided ignored files or get default ones
+            const filesToIgnore = ignoredFiles || this.getIgnoredFiles();
+            
+            // Filter out ignored files
+            const filteredFiles = sortedFiles.filter(file => !filesToIgnore.includes(file));
+            
+            for (let index = 0; index < filteredFiles.length; index++) {
+                const file = filteredFiles[index];
+                const filePath = path.join(dirPath, file);
+                
+                try {
+                    const stats = await fs.stat(filePath);
+                    const isLastFile = index === filteredFiles.length - 1;
+                    const connector = isLastFile ? "└── " : "├── ";
+                    const comment = this.fileComments[file] || "";
+                    const commentStr = comment ? `  # ${comment}` : "";
+                    
+                    output.push(`${prefix}${connector}${file}${commentStr}`);
 
-        const lastIndex = sortedItems.length - 1;
-
-        for (let i = 0; i < sortedItems.length; i++) {
-            const item = sortedItems[i];
-            const isDir = item.isDirectory();
-            const itemPath = path.join(rootPath, item.name);
-            const connector = i === lastIndex ? '└── ' : '├── ';
-            structure += `${prefix}${connector}${item.name}${isDir ? '/' : ''}\n`;
-
-            if (isDir && currentDepth < this.maxDepth - 1) {
-                const subPrefix = prefix + (i === lastIndex ? '    ' : '│   ');
-                const subStructure = await this.generate(itemPath, subPrefix, currentDepth + 1, i === lastIndex);
-                structure += subStructure;
+                    if (stats.isDirectory()) {
+                        const extension = isLastFile ? "    " : "│   ";
+                        await this.drawTreeToMd(filePath, prefix + extension, output, filesToIgnore);
+                    }
+                } catch (error) {
+                    // Skip files/directories that can't be accessed
+                    this.logger.error(`Cannot access: ${filePath}`, error);
+                    continue;
+                }
             }
+        } catch (error) {
+            this.logger.error(`Cannot read directory: ${dirPath}`, error);
         }
-    } catch (error) {
-        this.logger.error('Error reading directory', error);
+
+        return output;
     }
 
-    return structure;
-}
+    async generate(rootPath) {
+        try {
+            const folderName = path.basename(rootPath.replace(/[/\\]+$/, ""));
+            const ignoredFiles = this.getIgnoredFiles();
+            
+            this.logger.info(`Generating folder structure for: ${rootPath}`);
+            
+            const lines = [`${folderName}/`];
+            const treeLines = await this.drawTreeToMd(rootPath, "", [], ignoredFiles);
+            lines.push(...treeLines);
 
-    shouldIgnore(itemName) {
-    const dynamicIgnores = this.venvName ? [this.venvName] : [];
-    const allPatterns = [...this.ignorePatterns, ...dynamicIgnores];
-    return allPatterns.some(pattern =>
-        itemName === pattern || itemName.includes(pattern) || itemName.startsWith('.')
-    );
-}
-
-
-    calculateHeight(text, lineHeight = 20, baseHeight = 100) {
-        const lines = text.split('\n').length;
-        return Math.min(800, Math.max(baseHeight, lines * lineHeight));
+            const mdOutput = "```\n" + lines.join("\n") + "\n```";
+            
+            this.logger.info("✅ Folder structure generated successfully");
+            return mdOutput;
+            
+        } catch (error) {
+            this.logger.error("Failed to generate folder structure", error);
+            throw error;
+        }
     }
 }
 
@@ -344,9 +369,9 @@ class InputCollector {
             }
         });
 
-		const venvName = await vscode.window.showInputBox({
-			prompt: 'Step 3/3: Enter your virtual environment folder name (optional)',
-			placeHolder: 'e.g., venv or myvenv',
+		const extraIgnores = await vscode.window.showInputBox({
+			prompt: 'Step 3/3: Enter additional folders/files to ignore (comma-separated, optional)',
+			placeHolder: 'e.g., coverage,temp,.cache',
 			ignoreFocusOut: true
 		});
 
@@ -359,7 +384,7 @@ class InputCollector {
             projectOverview: projectOverview.trim(),
             repoLink: repoLink.trim(),
             workspaceFolder,
-			venvName: venvName ? venvName.trim() : ''
+			extraIgnores: extraIgnores? extraIgnores.split(',').map(x => x.trim()).filter(Boolean) : []
         };
     }
 }
@@ -444,7 +469,7 @@ class ReadmeGeneratorExtension {
                 title: "Analyzing project structure...",
                 cancellable: false
             }, async (progress) => {
-                const structureGenerator = new FolderStructureGenerator(this.logger, config.maxDepth, projectInfo.venvName);
+                const structureGenerator = new FolderStructureGenerator(this.logger, projectInfo.extraIgnores);
                 projectInfo.folderStructure = await structureGenerator.generate(projectInfo.workspaceFolder);
             });
 
