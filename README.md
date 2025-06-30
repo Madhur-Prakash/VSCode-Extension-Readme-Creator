@@ -1,9 +1,9 @@
-# README Generator VS Code Extension
+# Readme Creator VS Code Extension
 
-AI-powered README generator that creates professional documentation for your projects.
+AI-powered Readme creator that creates professional documentation for your projects.
 
 ## Features
-- Generate comprehensive README files using AI
+- Generate comprehensive Readme files using AI
 - Automatic project structure analysis
 - GitHub integration
 - Customizable templates
@@ -12,7 +12,7 @@ AI-powered README generator that creates professional documentation for your pro
 ## Installation
 1. Install from VS Code Marketplace
 2. Configure your Groq API key
-3. Start generating READMEs!
+3. Start generating Readmes!
 
 ## Usage
 1. Open Command Palette (Ctrl+Shift+P)
