@@ -10,3 +10,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Added AI-powered README generation using Groq API.
 - Supports customizable prompts and folder structure inclusion.
 - Provides commands for generating, previewing, and configuring README files.
+
+## [1.0.1] - 2025-06-30
+
+- Removed `readmeGenerator.maxDepth` from settings as it was unused.
+- Minor internal refactoring and cleanup.

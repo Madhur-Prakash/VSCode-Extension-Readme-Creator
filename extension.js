@@ -632,7 +632,6 @@ class ReadmeGeneratorExtension {
         details += `\n**Current Effective Values:**\n`;
         details += `• API Key: ${config.groqApiKey ? `${config.groqApiKey.substring(0, 8)}...` : 'Not configured'}\n`;
         details += `• Model: ${config.model}\n`;
-        details += `• Max Depth: ${config.maxDepth}\n`;
         details += `• Auto Open: ${config.autoOpen}\n`;
 
         const panel = vscode.window.createWebviewPanel(

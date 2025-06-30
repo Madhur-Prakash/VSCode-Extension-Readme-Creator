@@ -6,7 +6,7 @@
   "type": "git",
   "url": "https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator.git"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "MadhurPrakash",
   "icon": "icon.png",
   "engines": {
@@ -108,14 +108,6 @@
             "llama-3.1-70b-versatile",
             "mixtral-8x7b-32768"
           ],
-          "scope": "application"
-        },
-        "readmeGenerator.maxDepth": {
-          "type": "number",
-          "default": 3,
-          "description": "Maximum folder depth for structure generation",
-          "minimum": 1,
-          "maximum": 5,
           "scope": "application"
         },
         "readmeGenerator.autoOpen": {
