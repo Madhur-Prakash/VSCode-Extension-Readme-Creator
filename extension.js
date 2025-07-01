@@ -251,7 +251,7 @@ class FolderStructureGenerator {
 class ReadmeGeneratorService {
     constructor(logger) {
         this.logger = logger;
-	this.sampleReadme = fs.readFileSync(path.join(__dirname, 'templates', 'prompt.md'), 'utf8');
+	    this.sampleReadme = fs.readFileSync(path.join(__dirname, 'templates', 'prompt.md'), 'utf8');
         this.samplePrompt = this.getSamplePrompt();
     }
 
