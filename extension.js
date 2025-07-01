@@ -5,7 +5,12 @@ const axios = require('axios');
 
 // Load environment variables if .env file exists
 try {
-    require('dotenv').config();
+    const dotenv = require('dotenv');
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (workspaceFolder) {
+        dotenv.config({ path: path.join(workspaceFolder, '.env') });
+}
+
 } catch (error) {
     // dotenv is optional, continue without it
 }
@@ -44,8 +49,7 @@ class ConfigManager {
         
         // Priority order: VS Code Settings > Environment Variables > Default
         const groqApiKey = config.get('groqApiKey', '') || 
-                          process.env.GROQ_API_KEY || 
-                          process.env.GROQ_API_TOKEN || '';
+                          process.env.GROQ_API_KEY || '';
         
         const model = config.get('model', '') || 
                      process.env.DEFAULT_MODEL || 
@@ -82,8 +86,8 @@ class ConfigManager {
         const message = `To use a .env file:
 
 1. Create a .env file in your workspace root
-2. Add: GROQ_API_KEY=your_api_key_here
-3. Add: DEFAULT_MODEL=llama-3.3-70b-versatile (optional)
+2. Add: GROQ_API_KEY = your_api_key_here
+3. Add: DEFAULT_MODEL = llama-3.3-70b-versatile (optional)
 4. Restart VS Code or reload the window
 
 The extension will automatically load these values.`;
@@ -111,8 +115,8 @@ The extension will automatically load these values.`;
 
         const envPath = path.join(workspaceFolder, '.env');
         const envTemplate = `# README Generator Configuration
-GROQ_API_KEY=your_groq_api_key_here
-DEFAULT_MODEL=llama-3.3-70b-versatile
+GROQ_API_KEY = "your_groq_api_key_here"
+DEFAULT_MODEL = "llama-3.3-70b-versatile"
 
 # Get your API key from: https://console.groq.com/keys
 # Available models: llama-3.3-70b-versatile, llama-3.1-70b-versatile, mixtral-8x7b-32768
@@ -550,7 +554,7 @@ class ReadmeGeneratorExtension {
             const vsCodeSetting = vscode.workspace.getConfiguration('readmeGenerator').get('groqApiKey', '');
             if (vsCodeSetting) {
                 currentSource = 'VS Code Settings';
-            } else if (process.env.GROQ_API_KEY || process.env.GROQ_API_TOKEN) {
+            } else if (process.env.GROQ_API_KEY) {
                 currentSource = 'Environment Variable';
             }
         }
@@ -617,16 +621,10 @@ class ReadmeGeneratorExtension {
             details += `❌ VS Code Settings: Not set\n`;
         }
         
-        if (process.env.GROQ_API_KEY) {
+        if (process.env.GROQ_API_KEY && process.env.GROQ_API_KEY.startsWith('gsk_')) {
             details += `✅ GROQ_API_KEY: ${process.env.GROQ_API_KEY.substring(0, 8)}...\n`;
         } else {
             details += `❌ GROQ_API_KEY: Not set\n`;
-        }
-        
-        if (process.env.GROQ_API_TOKEN) {
-            details += `✅ GROQ_API_TOKEN: ${process.env.GROQ_API_TOKEN.substring(0, 8)}...\n`;
-        } else {
-            details += `❌ GROQ_API_TOKEN: Not set\n`;
         }
         
         details += `\n**Current Effective Values:**\n`;

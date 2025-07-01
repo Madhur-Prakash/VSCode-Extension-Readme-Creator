@@ -19,3 +19,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [1.0.2] - 2025-06-30
 
 - Updated Extension's Readme for clear instructions  
+
+## [1.0.3] - 2025-07-01
+### Fixed
+- `.env` file not being loaded from the workspace root
