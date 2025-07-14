@@ -175,11 +175,93 @@ class FolderStructureGenerator {
             "dist", "build", ".env", ".next", "target", "out", ".idea", 
             ".vs", "bin", "obj", ".nyc_output", "coverage", ".cache", "tmp", "temp"
         ];
+        this.gitignoreEntries = [];
+    }
+
+    async init(workspaceFolder) {
+        // Use the passed workspace folder instead of process.cwd()
+        const directoryPath = workspaceFolder || vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+        
+        if (!directoryPath) {
+            this.logger.error("No workspace folder found");
+            return;
+        }
+
+        // Find all .gitignore files in the workspace
+        await this.findAllGitignoreFiles(directoryPath);
+    }
+
+    async findAllGitignoreFiles(rootPath) {
+        const allGitignoreEntries = new Set();
+        let gitignoreCount = 0;
+
+        const searchDirectory = async (dirPath) => {
+            try {
+                const files = await fs.readdir(dirPath);
+                
+                for (const file of files) {
+                    const filePath = path.join(dirPath, file);
+                    
+                    try {
+                        const stats = await fs.stat(filePath);
+                        
+                        // Check if it's a .gitignore file
+                        if (file === '.gitignore' && stats.isFile()) {
+                            try {
+                                const content = await fs.readFile(filePath, 'utf8');
+                                const entries = content
+                                    .split('\n')
+                                    .map(line => line.trim())
+                                    .filter(line => line && !line.startsWith('#'));
+                                
+                                entries.forEach(entry => allGitignoreEntries.add(entry));
+                                gitignoreCount++;
+                                
+                                this.logger.info(`Found .gitignore with ${entries.length} entries in: ${path.relative(rootPath, dirPath) || 'root'}`);
+                            } catch (readError) {
+                                this.logger.info(`Could not read .gitignore in: ${path.relative(rootPath, dirPath)}`);
+                            }
+                        }
+                        // Recursively search subdirectories (but skip common ignore patterns)
+                        else if (stats.isDirectory() && !this.shouldSkipDirectory(file)) {
+                            await searchDirectory(filePath);
+                        }
+                    } catch (statError) {
+                        // Skip files/directories that can't be accessed
+                        continue;
+                    }
+                }
+            } catch (error) {
+                // Skip directories that can't be read
+                return;
+            }
+        };
+
+        await searchDirectory(rootPath);
+        
+        // Convert Set to Array
+        this.gitignoreEntries = Array.from(allGitignoreEntries);
+        
+        if (gitignoreCount === 0) {
+            this.logger.info("No .gitignore files found in workspace - using default ignores only");
+        } else {
+            this.logger.info(`Loaded ${this.gitignoreEntries.length} unique entries from ${gitignoreCount} .gitignore file(s)`);
+        }
+    }
+
+    shouldSkipDirectory(dirName) {
+        // Skip directories that are likely to contain many files and unlikely to have useful .gitignore files
+        const skipDirs = [
+            '.git', '__pycache__', 'node_modules', '.vscode', '.idea', '.vs',
+            'venv', 'env', '.env', 'dist', 'build', 'target', 'out',
+            '.pytest_cache', '.nyc_output', 'coverage', '.cache', 'tmp', 'temp'
+        ];
+        return skipDirs.includes(dirName);
     }
 
     getIgnoredFiles() {
         // Combine custom ignores with default ignores
-        const ignoredFiles = [...this.customIgnores, ...this.defaultIgnores];
+        const ignoredFiles = [...this.customIgnores, ...this.defaultIgnores, ...this.gitignoreEntries];
         return [...new Set(ignoredFiles)]; // Remove duplicates
     }
 
@@ -213,7 +295,7 @@ class FolderStructureGenerator {
                     }
                 } catch (error) {
                     // Skip files/directories that can't be accessed
-                    this.logger.error(`Cannot access: ${filePath}`, error);
+                    this.logger.info(`Skipping inaccessible file: ${filePath}`);
                     continue;
                 }
             }
@@ -236,7 +318,7 @@ class FolderStructureGenerator {
             lines.push(...treeLines);
 
             const mdOutput = "```\n" + lines.join("\n") + "\n```";
-            
+            this.logger.info(`Ignoring files: ${ignoredFiles.join(', ')}`);
             this.logger.info("✅ Folder structure generated successfully");
             return mdOutput;
             
@@ -383,7 +465,7 @@ class InputCollector {
 
 		const extraIgnores = await vscode.window.showInputBox({
 			prompt: 'Step 3/3: Enter additional folders/files to ignore (comma-separated, optional)',
-			placeHolder: 'e.g., coverage,temp,.cache',
+			placeHolder: 'e.g., coverage,temp,.cache (Note: .gitignore files are ignored by default)',
 			ignoreFocusOut: true
 		});
 
@@ -482,6 +564,7 @@ class ReadmeGeneratorExtension {
                 cancellable: false
             }, async (progress) => {
                 const structureGenerator = new FolderStructureGenerator(this.logger, projectInfo.extraIgnores);
+                await structureGenerator.init(projectInfo.workspaceFolder); // ✅ This loads .gitignore entries
                 projectInfo.folderStructure = await structureGenerator.generate(projectInfo.workspaceFolder);
             });
 
