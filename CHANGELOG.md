@@ -23,3 +23,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [1.0.3] - 2025-07-01
 ### Fixed
 - `.env` file not being loaded from the workspace root
+
+## [1.1.0] - 2025-07-14
+### Added
+- Automatically includes `.gitignore` entries when generating the folder structure.
+- Updated input placeholder to inform users that `.gitignore` files are ignored by default.
