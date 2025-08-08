@@ -28,3 +28,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Added
 - Automatically includes `.gitignore` entries when generating the folder structure.
 - Updated input placeholder to inform users that `.gitignore` files are ignored by default.
+
+## [1.1.1] - 2025-08-09
+### Changed
+- Changed project license from a custom personal license to the MIT License, and updated the README accordingly.
+
