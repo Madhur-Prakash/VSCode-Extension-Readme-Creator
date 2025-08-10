@@ -2,6 +2,8 @@
 
 **A FastAPI-Based Authentication System**
 
+---
+
 ## Overview
 This repository implements a robust authentication system using FastAPI and MongoDB. It supports three types of authentication:
 - **Email and Password**
@@ -52,19 +54,10 @@ The system securely hashes passwords before storing them in the database, ensuri
    - Configure the MongoDB URI in the `.env` file.
 
 6. Set up .env:
-- SECRET_KEY = "YOUR_SECRET_KEY"
-- ALGORITHM = "YOUR_ALGORITHM"
-- ACCESS_TOKEN_EXPIRE_MINUTES = "30" 
-- REFRESH_TOKEN_EXPIRE_DAYS = "7"
-- GOOGLE_CLIENT_SECRET = "YOUR_GOOGLE_CLIENT_SECRET"
-- GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"
-- SESSION_SECRET_KEY = "YOUR_SESSION_SECRET_KEY"
-- AWS_ACCESS_KEY_ID = "YOUR_AWS_ACCESS_KEY_ID"
-- AWS_SECRET_ACCESS_KEY = "YOUR_AWS_SECRET_ACCESS_KEY"
-- AWS_REGION = "YOUR_AWS_REGION"
-- NO_REPLY_EMAIL = "YOUR_NO_REPLY_EMAIL"
-- ACCOUNT_SID = "YOUR_TWILIO_ACCOUNT_SID"
-- AUTH_TOKEN = "YOUR_TWILIO_AUTH_TOKEN"
+
+``` bash
+# Copy the .env.sample file to .env and fill in the required values.
+```
 ---
 
 ## Usage

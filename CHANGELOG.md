@@ -33,3 +33,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Changed
 - Changed project license from a custom personal license to the MIT License, and updated the README accordingly.
 
+
+## [1.1.2] - 2025-08-10
+### Changed
+- Updated prompt template to provide clearer installation instructions.
