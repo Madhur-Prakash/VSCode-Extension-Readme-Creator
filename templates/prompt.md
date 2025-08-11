@@ -55,9 +55,9 @@ The system securely hashes passwords before storing them in the database, ensuri
 
 6. Set up .env:
 
-``` bash
-# Copy the .env.sample file to .env and fill in the required values.
-```
+   ``` bash
+   # Copy the .env.sample file to .env and fill in the required values.
+   ```
 ---
 
 ## Usage

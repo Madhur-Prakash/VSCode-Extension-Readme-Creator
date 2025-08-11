@@ -37,3 +37,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [1.1.2] - 2025-08-10
 ### Changed
 - Updated prompt template to provide clearer installation instructions.
+
+## [1.1.3] - 2025-08-11
+### Changed
+- Updated formatting of prompt template.
