@@ -755,8 +755,8 @@ class ReadmeGeneratorExtension {
         }
 
         const document = activeEditor.document;
-        if (path.basename(document.fileName) !== 'README.md') {
-            vscode.window.showErrorMessage('Please open a README.md file first.');
+        if (!path.basename(document.fileName).endsWith('.md')) {
+            vscode.window.showErrorMessage('Please open a Markdown (.md) file first.');
             return;
         }
 
