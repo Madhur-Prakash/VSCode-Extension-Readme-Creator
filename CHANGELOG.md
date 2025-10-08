@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed project license from a custom personal license to the MIT License.
 - Updated `README.md` to reflect new licensing terms.
 
-## [1.1.0](https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator/compare/v1.0.3...v1.1.0) - 2025-07-14
+## [1.1.0](https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator/compare/v1.0.3...v1.1.0) - 2025-07-15
 ### Added
 - Automatically includes `.gitignore` entries when generating folder structures.
 - Updated input placeholder text to clarify that `.gitignore` files are ignored by default.
