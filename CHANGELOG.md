@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.1.5](https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator/compare/v1.1.4...v1.1.5) - 2025-09-11
+## [1.1.5](https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator/compare/v1.1.4...v1.1.5) -  2025-10-08
 ### Fixed 
 - **Security fix**: Resolved a vulnerability to ensure safer operation of the extension.
 - **Minor internal improvements** to enhance stability and prevent potential misuse.
