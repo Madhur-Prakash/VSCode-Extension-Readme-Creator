@@ -34,11 +34,11 @@ The system securely hashes passwords before storing them in the database, ensuri
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/Auth.git
+   git clone https://github.com/your-username/Repo.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd Auth
+   cd Repo
    ```
 3. Create and activate a virtual environment:
    ```bash
