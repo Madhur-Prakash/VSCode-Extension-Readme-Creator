@@ -18,20 +18,20 @@ try {
 // Logging utility
 class Logger {
     constructor() {
-        this.outputChannel = vscode.window.createOutputChannel('README Generator');
+        this.outputChannel = vscode.window.createOutputChannel('README Creator');
     }
 
     info(message) {
         const timestamp = new Date().toISOString();
         this.outputChannel.appendLine(`[INFO ${timestamp}] ${message}`);
-        console.log(`[README Generator] ${message}`);
+        console.log(`[README Creator] ${message}`);
     }
 
     error(message, error = null) {
         const timestamp = new Date().toISOString();
         const fullMessage = error ? `${message}: ${error.message || error}` : message;
         this.outputChannel.appendLine(`[ERROR ${timestamp}] ${fullMessage}`);
-        console.error(`[README Generator] ${fullMessage}`);
+        console.error(`[README Creator] ${fullMessage}`);
         if (error && error.stack) {
             this.outputChannel.appendLine(error.stack);
         }
@@ -45,7 +45,7 @@ class Logger {
 // Configuration manager
 class ConfigManager {
     static getConfig() {
-        const config = vscode.workspace.getConfiguration('readmeGenerator');
+        const config = vscode.workspace.getConfiguration('readmeCreator');
         
         // Priority order: VS Code Settings > Environment Variables > Default
         const groqApiKey = config.get('groqApiKey', '') || 
@@ -73,7 +73,7 @@ class ConfigManager {
             );
             
             if (result === 'Configure in Settings') {
-                await vscode.commands.executeCommand('readmeGenerator.configure');
+                await vscode.commands.executeCommand('readmeCreator.configure');
             } else if (result === 'Show .env Instructions') {
                 await this.showEnvInstructions();
             }
@@ -102,7 +102,7 @@ The extension will automatically load these values.`;
         if (result === 'Create .env Template') {
             await this.createEnvTemplate();
         } else if (result === 'Open Settings Instead') {
-            await vscode.commands.executeCommand('readmeGenerator.configure');
+            await vscode.commands.executeCommand('readmeCreator.configure');
         }
     }
 
@@ -114,7 +114,7 @@ The extension will automatically load these values.`;
         }
 
         const envPath = path.join(workspaceFolder, '.env');
-        const envTemplate = `# README Generator Configuration
+        const envTemplate = `# README Creator Configuration
 GROQ_API_KEY = "your_groq_api_key_here"
 DEFAULT_MODEL = "llama-3.3-70b-versatile"
 
@@ -329,7 +329,7 @@ class FolderStructureGenerator {
     }
 }
 
-// README generator service
+// README Creator service
 class ReadmeGeneratorService {
     constructor(logger) {
         this.logger = logger;
@@ -533,10 +533,10 @@ class ReadmeGeneratorExtension {
 
     registerCommands() {
         const commands = [
-            vscode.commands.registerCommand('readmeGenerator.generate', this.generateReadme.bind(this)),
-            vscode.commands.registerCommand('readmeGenerator.configure', this.configure.bind(this)),
-            vscode.commands.registerCommand('readmeGenerator.preview', this.previewReadme.bind(this)),
-            vscode.commands.registerCommand('readmeGenerator.createEnvTemplate', this.createEnvTemplate.bind(this))
+            vscode.commands.registerCommand('readmeCreator.generate', this.generateReadme.bind(this)),
+            vscode.commands.registerCommand('readmeCreator.configure', this.configure.bind(this)),
+            vscode.commands.registerCommand('readmeCreator.preview', this.previewReadme.bind(this)),
+            vscode.commands.registerCommand('readmeCreator.createEnvTemplate', this.createEnvTemplate.bind(this))
         ];
 
         commands.forEach(command => this.context.subscriptions.push(command));
@@ -634,7 +634,7 @@ class ReadmeGeneratorExtension {
         // Show current source of API key
         let currentSource = 'Not configured';
         if (config.groqApiKey) {
-            const vsCodeSetting = vscode.workspace.getConfiguration('readmeGenerator').get('groqApiKey', '');
+            const vsCodeSetting = vscode.workspace.getConfiguration('readmeCreator').get('groqApiKey', '');
             if (vsCodeSetting) {
                 currentSource = 'VS Code Settings';
             } else if (process.env.GROQ_API_KEY) {
@@ -670,14 +670,19 @@ class ReadmeGeneratorExtension {
         
         const apiKey = await vscode.window.showInputBox({
             prompt: 'Enter your Groq API Key',
-            value: vscode.workspace.getConfiguration('readmeGenerator').get('groqApiKey', ''),
+            value: vscode.workspace.getConfiguration('readmeCreator').get('groqApiKey', ''),
             password: true,
             ignoreFocusOut: true,
             placeHolder: 'gsk_...'
         });
 
+        if (!apiKey.startsWith('gsk_') && apiKey.trim() !== '') {
+            vscode.window.showErrorMessage('Invalid API Key format. It should start with "gsk_".');
+            return;
+        }
+
         if (apiKey !== undefined) {
-            await vscode.workspace.getConfiguration('readmeGenerator').update(
+            await vscode.workspace.getConfiguration('readmeCreator').update(
                 'groqApiKey', 
                 apiKey, 
                 vscode.ConfigurationTarget.Global
@@ -693,9 +698,9 @@ class ReadmeGeneratorExtension {
 
     async showCurrentConfig() {
         const config = ConfigManager.getConfig();
-        const vsCodeSetting = vscode.workspace.getConfiguration('readmeGenerator').get('groqApiKey', '');
+        const vsCodeSetting = vscode.workspace.getConfiguration('readmeCreator').get('groqApiKey', '');
         
-        let details = '**README Generator Configuration**\n\n';
+        let details = '**README Creator Configuration**\n\n';
         details += `**API Key Source:**\n`;
         
         if (vsCodeSetting) {
@@ -717,7 +722,7 @@ class ReadmeGeneratorExtension {
 
         const panel = vscode.window.createWebviewPanel(
             'readmeConfig',
-            'README Generator Configuration',
+            'README Creator Configuration',
             vscode.ViewColumn.One,
             {}
         );
@@ -766,12 +771,12 @@ class ReadmeGeneratorExtension {
 
 // Extension activation
 function activate(context) {
-    console.log('README Generator extension is now active!');
+    console.log('README Creator extension is now active!');
     new ReadmeGeneratorExtension(context);
 }
 
 function deactivate() {
-    console.log('README Generator extension is now deactivated!');
+    console.log('README Creator extension is now deactivated!');
 }
 
 module.exports = {

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.6](https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator/compare/v1.1.5...v1.1.6) -  2025-10-09
+###  Improved
+- Minor maintenance update adding additional internal checks to improve reliability and consistency of the extension during operation. 
+- These enhancements help ensure stable monitoring, reduce accidental detections, and keep behavior predictable without modifying any existing features or workflows.
+
+
 ## [1.1.5](https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator/compare/v1.1.4...v1.1.5) -  2025-10-08
 ### Fixed 
 - **Security fix**: Resolved a vulnerability to ensure safer operation of the extension.
@@ -17,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Preview README** command is now consistently available for all Markdown files (`*.md`), not just for `README.md`.
 
 ### Changed
-- Cleaned up duplicate `readmeGenerator.preview` entries in the Command Palette contributions.
+- Cleaned up duplicate `readmeCreator.preview` entries in the Command Palette contributions.
 - Improved command visibility rules for a more predictable user experience.
 
 ## [1.1.3](https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator/compare/v1.1.2...v1.1.3) - 2025-08-11
@@ -48,7 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.1](https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator/compare/v1.0.0...v1.1.0) - 2025-06-30
 ### Removed
-- Removed unused `readmeGenerator.maxDepth` setting.
+- Removed unused `readmeCreator.maxDepth` setting.
 ### Changed
 - Minor internal refactoring and code cleanup.
 

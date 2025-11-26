@@ -6,7 +6,7 @@
   "type": "git",
   "url": "https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator.git"
   },
-  "version": "1.1.5",
+  "version": "1.1.6",
   "publisher": "MadhurPrakash",
   "icon": "icon.png",
   "engines": {
@@ -29,72 +29,72 @@
   "contributes": {
     "commands": [
         {
-        "command": "readmeGenerator.createEnvTemplate",
+        "command": "readmeCreator.createEnvTemplate",
         "title": "Create .env Template",
-        "category": "README Generator",
+        "category": "README Creator",
         "icon": "$(new-file)"
       },
 
       {
-        "command": "readmeGenerator.generate",
+        "command": "readmeCreator.generate",
         "title": "Generate README",
-        "category": "README Generator",
+        "category": "README Creator",
         "icon": "$(file-text)"
       },
       {
-        "command": "readmeGenerator.configure",
+        "command": "readmeCreator.configure",
         "title": "Configure API Settings",
-        "category": "README Generator",
+        "category": "README Creator",
         "icon": "$(settings-gear)"
       },
       {
-        "command": "readmeGenerator.preview",
+        "command": "readmeCreator.preview",
         "title": "Preview README",
-        "category": "README Generator",
+        "category": "README Creator",
         "icon": "$(preview)"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "command": "readmeGenerator.generate",
+          "command": "readmeCreator.generate",
           "group": "readme-generator@1",
           "when": "explorerResourceIsFolder"
         }
       ],
       "commandPalette": [
         {
-          "command": "readmeGenerator.generate",
+          "command": "readmeCreator.generate",
           "when": "workspaceFolderCount > 0"
         },
         {
-          "command": "readmeGenerator.preview"
+          "command": "readmeCreator.preview"
         },
         {
-          "command": "readmeGenerator.createEnvTemplate"
+          "command": "readmeCreator.createEnvTemplate"
         },
         {
-          "command": "readmeGenerator.configure"
+          "command": "readmeCreator.configure"
         }
       ],
       "editor/title": [
         {
-          "command": "readmeGenerator.preview",
+          "command": "readmeCreator.preview",
           "when": "resourceExtname == .md",
           "group": "navigation"
         }
       ]
     },
     "configuration": {
-      "title": "README Generator",
+      "title": "README Creator",
       "properties": {
-        "readmeGenerator.groqApiKey": {
+        "readmeCreator.groqApiKey": {
           "type": "string",
           "default": "",
           "description": "Your Groq API Key for AI-powered README generation (can also be set via GROQ_API_KEY environment variable)",
           "scope": "application"
         },
-        "readmeGenerator.model": {
+        "readmeCreator.model": {
           "type": "string",
           "default": "llama-3.3-70b-versatile",
           "description": "Groq model to use for generation",
@@ -105,7 +105,7 @@
           ],
           "scope": "application"
         },
-        "readmeGenerator.autoOpen": {
+        "readmeCreator.autoOpen": {
           "type": "boolean",
           "default": true,
           "description": "Automatically open generated README file",
