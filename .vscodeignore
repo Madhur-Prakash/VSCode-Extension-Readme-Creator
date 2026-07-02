@@ -10,3 +10,4 @@ vsc-extension-quickstart.md
 **/.vscode-test.*
 .env
 .env.*
+node_modules/**
