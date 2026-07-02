@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## Unreleased
+
+### Note
+- Versions **1.1.8** and **1.1.9** contained an issue in the request token handling that could cause README generation to fail for certain Groq models. Users are strongly encouraged to update to **v1.1.10**.
+
+---
+
+# [1.1.10](https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator/compare/v1.1.9...v1.1.10) - 2026-07-03
+
+## Fixed
+- Fixed an issue where requests could exceed Groq API token limits, causing README generation to fail for certain models.
+- Improved request token management by correctly limiting prompt size and response token allocation before sending API requests.
+- Added safeguards to automatically truncate oversized folder structures when necessary, reducing the likelihood of API request failures.
+
 ## [1.1.7](https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator/compare/v1.1.6...v1.1.7) -  2026-07-03
 ## Removed
 - Removed support for the Groq model `llama-3.3-70b-versatile` due to deprecation.
