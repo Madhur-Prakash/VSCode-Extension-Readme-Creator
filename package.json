@@ -6,7 +6,7 @@
   "type": "git",
   "url": "https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator.git"
   },
-  "version": "1.1.6",
+  "version": "1.1.7",
   "publisher": "MadhurPrakash",
   "icon": "icon.png",
   "engines": {
@@ -96,12 +96,12 @@
         },
         "readmeCreator.model": {
           "type": "string",
-          "default": "llama-3.3-70b-versatile",
+          "default": "openai/gpt-oss-120b",
           "description": "Groq model to use for generation",
           "enum": [
-            "llama-3.3-70b-versatile",
-            "llama-3.1-70b-versatile",
-            "mixtral-8x7b-32768"
+            "openai/gpt-oss-120b",
+            "openai/gpt-oss-20b",
+            "qwen/qwen3.6-27b"
           ],
           "scope": "application"
         },

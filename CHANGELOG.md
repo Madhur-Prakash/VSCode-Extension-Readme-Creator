@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.7](https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator/compare/v1.1.6...v1.1.7) -  2026-07-03
+### Added
+- Removed support for the Groq model `llama-3.3-70b-versatile` due to deprecation.
+- Added support for the new Groq model `qwen/qwen3.6-27b`,`openai/gpt-oss-120b`, and `openai/gpt-oss-20b` for improved performance and capabilities.
+
 ## [1.1.6](https://github.com/Madhur-Prakash/VSCode-Extension-Readme-Creator/compare/v1.1.5...v1.1.6) -  2025-10-09
 ###  Improved
 - Minor maintenance update adding additional internal checks to improve reliability and consistency of the extension during operation. 

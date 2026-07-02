@@ -116,10 +116,10 @@ The extension will automatically load these values.`;
         const envPath = path.join(workspaceFolder, '.env');
         const envTemplate = `# README Creator Configuration
 GROQ_API_KEY = "your_groq_api_key_here"
-DEFAULT_MODEL = "llama-3.3-70b-versatile"
+DEFAULT_MODEL = "openai/gpt-oss-120b"
 
 # Get your API key from: https://console.groq.com/keys
-# Available models: llama-3.3-70b-versatile, llama-3.1-70b-versatile, mixtral-8x7b-32768
+# Available models: openai/gpt-oss-120b, openai/gpt-oss-20b, qwen/qwen3.6-27b
 `;
 
         try {
