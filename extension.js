@@ -361,8 +361,7 @@ class ReadmeGeneratorService {
 		Give the folder structure in the Project Structure section only if it is provided, otherwise skip this section.
 
 		Follow these rules strictly:
-		Give the installation steps exaxtly as provided in the ${this.sampleReadme} file. Do not modify the installation steps.
-		Give the usage instructions exactly as provided in the ${this.sampleReadme} file. Do not modify the usage instructions.
+		Give the installation steps exaxtly as provided in the ${this.sampleReadme} file. Do not modify the installation steps and usage instructions.
 		
 		Don't give lines like (\`here's the output:\`) or "Here's the generated README:" or "Here is the README:"
 		
@@ -377,18 +376,43 @@ class ReadmeGeneratorService {
 
     async generateSummary(inputPrompt, repoLink, folderStructure, config) {
         try {
-            const userPrompt = `Project information to include in the README: ${inputPrompt || 'No specific project description provided.'}
-GitHub repository link: ${repoLink}
-Folder structure: ${folderStructure || 'No folder structure provided.'}`;
+            // Safety: avoid sending excessively large requests that hit provider limits
+            const maxTotalTokens = 8000; // conservative org limit reported in error
+            const maxResponseTokens = 4000; // tokens reserved for model response
+            const allowedPromptTokens = Math.max(512, maxTotalTokens - maxResponseTokens);
+            const approxCharsPerToken = 4; // heuristic: ~4 chars/token
+            const allowedPromptChars = allowedPromptTokens * approxCharsPerToken;
+
+            const systemContent = this.samplePrompt;
+            const userPromptPrefix = `Project information to include in the README: ${inputPrompt || 'No specific project description provided.'}\nGitHub repository link: ${repoLink}\nFolder structure: `;
+            let folderText = folderStructure || 'No folder structure provided.';
+
+            // If combined prompt exceeds allowed chars, truncate folder structure first
+            const combinedLength = systemContent.length + userPromptPrefix.length + folderText.length;
+            if (combinedLength > allowedPromptChars) {
+                const allowanceForFolder = Math.max(0, allowedPromptChars - (systemContent.length + userPromptPrefix.length));
+
+                if (allowanceForFolder <= 0) {
+                    // Not enough room even without folder structure: replace with short notice
+                    folderText = '[FOLDER STRUCTURE REMOVED DUE TO SIZE]';
+                } else if (allowanceForFolder < folderText.length) {
+                    // Truncate folder structure to fit within allowance and preserve start
+                    folderText = folderText.slice(0, allowanceForFolder - 40) + '\n\n[TRUNCATED FOLDER STRUCTURE]' ;
+                }
+
+                this.logger.info(`Truncated folder structure to ${folderText.length} chars to avoid token limit (allowedPromptChars=${allowedPromptChars})`);
+            }
+
+            const userPrompt = `${userPromptPrefix}${folderText}`;
 
             const response = await axios.post('https://api.groq.com/openai/v1/chat/completions', {
                 model: config.model,
                 messages: [
-                    { role: 'system', content: this.samplePrompt },
+                    { role: 'system', content: systemContent },
                     { role: 'user', content: userPrompt }
                 ],
                 temperature: 0.7,
-                max_tokens: 4000,
+                max_tokens: maxResponseTokens,
                 top_p: 1,
                 stream: false
             }, {
